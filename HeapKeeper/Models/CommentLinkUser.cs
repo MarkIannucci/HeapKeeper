@@ -8,6 +8,7 @@ namespace HeapKeeper
 {
     using HeapKeeper.Models;
     using Newtonsoft.Json;
+    using System.Data;
 
     public class CommentLinkUser
     {
@@ -21,7 +22,7 @@ namespace HeapKeeper
         public string Name { get; set; }
         
         [JsonProperty(PropertyName = "token")]
-        public AzDoToken Token { get; set; }
+        public AzDoToken Token { get; private set; }
         
         [JsonProperty(PropertyName = "tokenExpiration")]
         public DateTime TokenExpiration { get; set; }
@@ -38,6 +39,12 @@ namespace HeapKeeper
             TokenExpiration = DateTime.UtcNow.AddSeconds(Convert.ToDouble(token.ExpiresIn));
             DisplayName = name + " <" + emailAddress + ">";
         }
+        public void UpdateToken(AzDoToken toke)
+        {
+            Token = toke;
+            TokenExpiration = DateTime.UtcNow.AddSeconds(Convert.ToDouble(toke.ExpiresIn));
+        }
+        
         public CommentLinkUser()
         {
 

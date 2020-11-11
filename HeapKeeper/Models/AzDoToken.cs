@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HeapKeeper.Models
 {
@@ -22,6 +23,16 @@ namespace HeapKeeper.Models
         }
         public AzDoToken()
         {
+
+        }
+
+        public AzDoToken(string json)
+        {
+            JObject jObj = JObject.Parse(json);
+            AccessToken = (string)jObj["access_token"];
+            TokenType = (string)jObj["token_type"];
+            RefreshToken = (string)jObj["refresh_token"];
+            ExpiresIn = (string)jObj["expires_in"];
 
         }
     }
