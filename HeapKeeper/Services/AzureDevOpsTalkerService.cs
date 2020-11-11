@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.ApplicationInsights;
 
 namespace HeapKeeper
 {
@@ -23,12 +25,14 @@ namespace HeapKeeper
         private HttpClient _httpClient;
         private AzureDevOpsOAuthOptions _devOpsOAuthOptions;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger _logger;
 
-        public AzureDevOpsTalkerService(HttpClient httpClient, AzureDevOpsOAuthOptions devOpsOAuthOptions, IHttpContextAccessor httpContextAccessor)
+        public AzureDevOpsTalkerService(HttpClient httpClient, AzureDevOpsOAuthOptions devOpsOAuthOptions, IHttpContextAccessor httpContextAccessor, ILogger<AzureDevOpsTalkerService> logger)
         {
             _httpClient = httpClient;
             _devOpsOAuthOptions = devOpsOAuthOptions;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public HttpResponseMessage Patch(string uri, HttpContent content, string token)
@@ -68,7 +72,13 @@ namespace HeapKeeper
                 return JObject.Parse(body).ToObject<AzDoToken>();
             } else
             {
-                throw new NotImplementedException("No error handling on failed token refresh");
+                _logger.LogError("An error occurred while retrieving the user profile: the remote server " +
+                                "returned a {Status} response with the following payload: {Headers} {Body}.",
+                                responseMessage.StatusCode,
+                                responseMessage.Headers.ToString(),
+                                await responseMessage.Content.ReadAsStringAsync());
+
+                throw new HttpRequestException("An error occurred while refreshing the token.");
             }
         }
     }
