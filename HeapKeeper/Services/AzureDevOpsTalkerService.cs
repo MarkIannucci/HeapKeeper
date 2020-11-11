@@ -69,6 +69,7 @@ namespace HeapKeeper
                 return JObject.Parse(body).ToObject<AzDoToken>();
             } else
             {
+                
                 _logger.LogError("An error occurred while retrieving the user profile: the remote server " +
                                 "returned a {Status} response with the following payload: {Headers} {Body}.",
                                 responseMessage.StatusCode,
