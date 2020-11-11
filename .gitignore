@@ -1,0 +1,20 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+.vs/
+_ReSharper.Caches/
+
+*.suo
+packages/
+
+*.csproj.user
+
+*.tmp
+bin/
+obj/
+
+app.Debug.config
+app.Release.config
+appsettings.Development.json
+TestResults/

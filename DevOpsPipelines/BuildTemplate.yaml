@@ -1,0 +1,32 @@
+parameters:
+- name: configuration
+  type: string
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '*.sln'
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '*.sln'
+    arguments: '--configuration ${{ parameters.configuration}}'
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: HeapKeeper/HeapKeeper.csproj
+    arguments: '--configuration ${{ parameters.configuration}} --output $(build.artifactstagingdirectory)'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: ${{ parameters.configuration}}
+- task: PublishSymbols@2
+  displayName: 'Publish symbols path'
+  inputs:
+    SymbolServerType: TeamServices
+  continueOnError: true

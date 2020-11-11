@@ -1,0 +1,39 @@
+trigger:
+- main
+pr:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  system.debug: true
+  ApplicationInsights.InstrumentationKey: $(AppInsightsIKey)
+  AzureAppId: $(AzureDevOpsAppId)
+  AzureClientSecret: $(AzureDevOpsClientSecret)
+  BasicAuth.Username: user
+  BasicAuth.Password: $(BasicAuthPassword)
+  CosmosDb.Account: $(CosmosDbAccount)
+  CosmosDb.Key: $(CosmosDbKey)
+  
+stages:
+  #build
+  - stage: BuildReleaseStage
+    jobs:
+      - job: BuildReleaseJob
+        steps:
+          - template: BuildTemplate.yaml
+            parameters:
+              configuration: Release
+  #deploy
+  - stage: DeployReleaseStage
+    jobs:
+      - job: DeployReleaseJob
+        steps:
+          - template: DeployTemplate.yaml
+            parameters:
+              configuration: Release
+              WebAppName: HeapKeeper
+              azureSubscription: $(AzureSubscription)
+
+    

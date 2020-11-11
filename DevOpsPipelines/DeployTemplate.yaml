@@ -1,0 +1,26 @@
+parameters:
+- name: WebAppName
+  type: string
+- name: configuration
+  type: string
+- name: azureSubscription
+  type: string
+  
+steps:
+- checkout: none
+- task: DownloadBuildArtifacts@0
+  inputs:
+    buildType: 'current' # Options: current, specific
+    downloadType: 'single' # Choose whether to download a single artifact or all artifacts of a specific build. Options: single, specific
+    artifactName: ${{ parameters.configuration }} # Required when downloadType == Single
+    downloadPath: '$(System.ArtifactsDirectory)' 
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy Azure App Service'
+  inputs:
+    azureSubscription: ${{ parameters.azureSubscription }} # obtain this value by linking the subscription to the pipeline. https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops
+    WebAppName:  ${{ parameters.WebAppName }}
+    packageForLinux: '$(System.ArtifactsDirectory)/${{ parameters.configuration }}/*.zip'
+    enableCustomDeployment: true
+    RemoveAdditionalFilesFlag: true
+    ExcludeFilesFromAppDataFlag: true
+    JSONFiles: appsettings.json
