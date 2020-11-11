@@ -9,10 +9,18 @@ namespace HeapKeeper.Models
 {
     public class AzDoToken
     {
+        [JsonProperty (PropertyName = "AccessToken")]
         public string AccessToken { get; set; }
+
+        [JsonProperty(PropertyName = "TokenType")]
         public string TokenType { get; set; }
+
+        [JsonProperty(PropertyName = "RefreshToken")]
         public string RefreshToken { get; set; }
+
+        [JsonProperty(PropertyName = "ExpiresIn")]
         public string ExpiresIn { get; set; }
+
         public AzDoToken(OAuthTokenResponse tokenResponse)
         {
             AccessToken = tokenResponse.AccessToken;
