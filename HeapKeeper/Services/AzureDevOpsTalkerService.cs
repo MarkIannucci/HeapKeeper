@@ -66,6 +66,7 @@ namespace HeapKeeper
             {
                 // Handle successful request
                 String body = await responseMessage.Content.ReadAsStringAsync();
+                _logger.LogError("JSON token received {JSON}", body);
                 return JObject.Parse(body).ToObject<AzDoToken>();
             } else
             {
