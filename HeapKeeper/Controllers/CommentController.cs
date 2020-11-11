@@ -83,7 +83,7 @@ namespace HeapKeeper.Controllers
             if (DateTime.UtcNow > cml.TokenExpiration.AddSeconds(-300))
             {
                 AzDoToken toke = _talker.RefreshToken(cml.Token.RefreshToken).Result;
-                cml.Token = toke;
+                cml.UpdateToken(toke);
                 _cosmosDb.UpsertItem(cml);
             }
 
