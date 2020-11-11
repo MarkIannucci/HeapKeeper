@@ -52,17 +52,14 @@ namespace HeapKeeper
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, _devOpsOAuthOptions.TokenEndpoint);
             requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            Dictionary<String, String> form = new Dictionary<String, String>()
+            requestMessage.Content = new FormUrlEncodedContent( new Dictionary<String, String>()
                 {
                     { "client_assertion_type", AzureDevOpsAuthenticationDefaults.ClientAssertionType },
                     { "client_assertion", _devOpsOAuthOptions.ClientSecret },
                     { "grant_type", "refresh_token" },
                     { "assertion", refreshToken },
                     { "redirect_uri", myHostUrl + _devOpsOAuthOptions.CallbackPath }
-                };
-            requestMessage.Content = new FormUrlEncodedContent(form);
-            
-
+                });
             HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
 
             if (responseMessage.IsSuccessStatusCode)
