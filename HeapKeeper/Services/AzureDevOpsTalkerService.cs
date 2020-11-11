@@ -22,11 +22,13 @@ namespace HeapKeeper
     {
         private HttpClient _httpClient;
         private AzureDevOpsOAuthOptions _devOpsOAuthOptions;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AzureDevOpsTalkerService(HttpClient httpClient, AzureDevOpsOAuthOptions devOpsOAuthOptions )
+        public AzureDevOpsTalkerService(HttpClient httpClient, AzureDevOpsOAuthOptions devOpsOAuthOptions, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _devOpsOAuthOptions = devOpsOAuthOptions;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public HttpResponseMessage Patch(string uri, HttpContent content, string token)
@@ -39,6 +41,10 @@ namespace HeapKeeper
 
         public async Task<AzDoToken> RefreshToken(string refreshToken)
         {
+            // https://stackoverflow.com/a/53577368/1944366
+            string myHostUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+
+
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, _devOpsOAuthOptions.TokenEndpoint);
             requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -48,9 +54,10 @@ namespace HeapKeeper
                     { "client_assertion", _devOpsOAuthOptions.ClientSecret },
                     { "grant_type", "refresh_token" },
                     { "assertion", refreshToken },
-                    { "redirect_uri", _devOpsOAuthOptions.CallbackPath }
+                    { "redirect_uri", myHostUrl + _devOpsOAuthOptions.CallbackPath }
                 };
             requestMessage.Content = new FormUrlEncodedContent(form);
+            
 
             HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
 

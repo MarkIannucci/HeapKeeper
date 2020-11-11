@@ -64,6 +64,7 @@ namespace HeapKeeper
             List<Injection> injections = injectionsSection.Get<List<Injection>>();
             services.AddSingleton<ICommentLinkerConfiguration>(_ => new CommentLinkerConfiguration(injections));
             services.AddSingleton<AzureDevOpsOAuthOptions>(AzDevOpsOptions);
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
