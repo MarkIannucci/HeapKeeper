@@ -38,6 +38,7 @@ Do you reference tickets in other systems using structured text in your Azure De
     | Name | Value | Secret? |
     | --- | --- | --- |
     | AppInsightsIKey| GUID from step A-9 | No
+    | AzureAppServiceName| $name value from script | No
     | AzureDevOpsAppId| GUID from step B-2 | No
     | AzureDevOpsClientSecret| Value from step B-3 | Yes
     | AzureSubscription| Value from step B-4 | No
