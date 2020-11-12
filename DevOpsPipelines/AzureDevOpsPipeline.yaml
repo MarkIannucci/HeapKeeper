@@ -15,7 +15,7 @@ variables:
   BasicAuth.Password: $(BasicAuthPassword)
   CosmosDb.Account: $(CosmosDbAccount)
   CosmosDb.Key: $(CosmosDbKey)
-  
+ 
 stages:
   #build
   - stage: BuildReleaseStage
