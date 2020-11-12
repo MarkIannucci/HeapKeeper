@@ -42,7 +42,7 @@ try{
 $result = az cosmosdb check-name-exists --name $name
 }
 catch{
-    Write-Error "There was an error checking cosmosDB for the name: $name. Ensure you are logged in and that your name does not have underscores"
+    Write-Error "There was an error checking cosmosDB for the name: $name. Ensure you are logged in and that your name does not have underscores, the error from the cmdlet follows: $_.Exception.Message"
 }
 if($result -eq "true"){
     Write-Error "$name is taken, try again" -ErrorAction Stop
