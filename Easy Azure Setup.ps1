@@ -1,6 +1,6 @@
 ﻿param(
-$name = "cogitoheapkeeper"
-,$resourceGroup = "CherwellAzureDevOpsMapper" # This is used if you want to add this to an existing resource group. if null or empty, the resource group will be set to $name.
+$name = "heapkeeper"
+,$resourceGroup = "" # This is used if you want to add this to an existing resource group. if null or empty, the resource group will be set to $name.
 ,$location = "centralus" # To see possible locations: az account list-locations -o table
 )
 #A1
@@ -54,15 +54,21 @@ az group create --location $location --resource-group $name
 az appservice plan create --name $name --resource-group $resourceGroup --location $location --sku F1
 #A7
 $webAppResult = az webapp create --name $name --resource-group $resourceGroup --plan $name
-$webAppResult
-Write-Host "The defaultHostName is $($webAppResult.defaultHostName)"
+if($webAppResult -eq $Null){
+    Write-Error "Error creating the webapp" -ErrorAction Stop
+}
+Write-Host "The defaultHostName is $(($webAppResult | ConvertFrom-Json).defaultHostName)"
 #A8
 az extension add --name application-insights
 #A9
 $appInsightResult = az monitor app-insights component create --app $name --location $location --resource-group $resourceGroup
-$appInsightResult
-Write-Host "The instrumentation key is: $($appInsightResult.instrumentationkey)"
+if($appInsightResult -eq $Null){
+    Write-Error "Error creating the appInsight" -ErrorAction Stop
+}
+Write-Host "The instrumentation key is: $(($appInsightResult | ConvertFrom-Json).instrumentationkey)"
 #A10
 $cosmosDBResult = az cosmosdb create --name $name --resource-group $resourceGroup --enable-free-tier true
-$cosmosDBResult
-Write-Host "The documentEndpoint is: $($cosmosDBResultdocumentEndpoint)"
+if($cosmosDBResult -eq $Null){
+    Write-Error "Error creating the cosmosDB" -ErrorAction Stop
+}
+Write-Host "The documentEndpoint is: $(($cosmosDBResult | ConvertFrom-Json).documentEndpoint)"
