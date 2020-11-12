@@ -14,8 +14,8 @@ Do you reference tickets in other systems using structured text in your Azure De
 2. Define a variable for the name of the service: `$name = "heapkeeper"`
 3. Confirm that your name is a "good" one for Azure Cosmos DB using `az cosmosdb check-name-exists --name $name`.  If you get `false` you're good to go.
 4. Define a variable for the location of the service: `$location = "centralus"`
-5. Create the Azure Resource Group: `az group create --location centralus --resource-group $name`
-6. Create the Azure App Service Plan: `az appservice plan create --name $name --resource-group $name --location centralus --sku F1`
+5. Create the Azure Resource Group: `az group create --location $location --resource-group $name`
+6. Create the Azure App Service Plan: `az appservice plan create --name $name --resource-group $name --location $location --sku F1`
 7. Create the Azure App Service Webapp: `az webapp create --name $name --resource-group $name --plan $name`.  Make note of the defaultHostName.  You'll use that in a future step
 8. Add the [application insights extension](https://docs.microsoft.com/en-us/cli/azure/ext/application-insights/?view=azure-cli-latest) to Azure CLI: `az extension add -name application-insights`
 9. Create an Azure App Insights instrumentaiton key: `az monitor app-insights component create --app $name --location $location --resource-group $name`.  In addition, make note of the instrumentation key.  We will store it in a pipeline variable later.
