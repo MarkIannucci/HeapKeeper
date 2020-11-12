@@ -15,7 +15,7 @@ variables:
   BasicAuth.Password: $(BasicAuthPassword)
   CosmosDb.Account: $(CosmosDbAccount)
   CosmosDb.Key: $(CosmosDbKey)
-  
+ 
 stages:
   #build
   - stage: BuildReleaseStage
@@ -33,7 +33,7 @@ stages:
           - template: DeployTemplate.yaml
             parameters:
               configuration: Release
-              WebAppName: HeapKeeper
+              WebAppName: $(AzureAppServiceName)
               azureSubscription: $(AzureSubscription)
 
     
