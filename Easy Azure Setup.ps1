@@ -2,6 +2,7 @@
 $name = "heapkeeper"
 ,$resourceGroup = "" # This is used if you want to add this to an existing resource group. if null or empty, the resource group will be set to $name.
 ,$location = "centralus" # To see possible locations: az account list-locations -o table
+,$appServicePlan = "" # This is used if you want to add this to an existing app service plan.
 )
 #A1
 Write-Host "Logging you in, follow the prompts"
@@ -9,6 +10,10 @@ az login | OUT-NULL
 
 if([string]::IsnUllOrEmpty($resourceGroup)){
     $resourceGroup = $name
+)
+
+if([string]::IsnUllOrEmpty($appServicePlan)){
+    $appServicePlan = $name
 }
 
 
@@ -53,7 +58,7 @@ az group create --location $location --resource-group $name
 #A6
 az appservice plan create --name $name --resource-group $resourceGroup --location $location --sku F1
 #A7
-$webAppResult = az webapp create --name $name --resource-group $resourceGroup --plan $name
+$webAppResult = az webapp create --name $name --resource-group $resourceGroup --plan $appServicePlan
 if($webAppResult -eq $Null){
     Write-Error "Error creating the webapp" -ErrorAction Stop
 }
