@@ -10,6 +10,10 @@ az login | OUT-NULL
 
 if([string]::IsnUllOrEmpty($resourceGroup)){
     $resourceGroup = $name
+)
+
+if([string]::IsnUllOrEmpty($appServicePlan)){
+    $appServicePlan = $name
 }
 
 if([string]::IsnUllOrEmpty($appServicePlan)){
