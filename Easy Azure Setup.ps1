@@ -16,6 +16,10 @@ if([string]::IsnUllOrEmpty($appServicePlan)){
     $appServicePlan = $name
 }
 
+if([string]::IsnUllOrEmpty($appServicePlan)){
+    $appServicePlan = $name
+}
+
 
 $getSubscription = $true
 while($getSubscription){
@@ -32,7 +36,7 @@ while($getSubscription){
         Write-Host "All accounts:"
         $AllAccounts = az account list | ConvertFrom-Json
 
-        $AllAccounts | select id,name,cloudName, homeTenantID, state | ft
+        $AllAccounts | Select-Object id,name,cloudName, homeTenantID, state | Format-Table
             
         $subscription = Read-Host "What subscription should we use? Enter the ID or name"
 
@@ -59,7 +63,7 @@ az group create --location $location --resource-group $name
 az appservice plan create --name $name --resource-group $resourceGroup --location $location --sku F1
 #A7
 $webAppResult = az webapp create --name $name --resource-group $resourceGroup --plan $appServicePlan
-if($webAppResult -eq $Null){
+if($Null -eq $webAppResult){
     Write-Error "Error creating the webapp" -ErrorAction Stop
 }
 Write-Host "The defaultHostName is $(($webAppResult | ConvertFrom-Json).defaultHostName)"
@@ -67,13 +71,13 @@ Write-Host "The defaultHostName is $(($webAppResult | ConvertFrom-Json).defaultH
 az extension add --name application-insights
 #A9
 $appInsightResult = az monitor app-insights component create --app $name --location $location --resource-group $resourceGroup
-if($appInsightResult -eq $Null){
+if($Null -eq $appInsightResult){
     Write-Error "Error creating the appInsight" -ErrorAction Stop
 }
 Write-Host "The instrumentation key is: $(($appInsightResult | ConvertFrom-Json).instrumentationkey)"
 #A10
 $cosmosDBResult = az cosmosdb create --name $name --resource-group $resourceGroup --enable-free-tier true
-if($cosmosDBResult -eq $Null){
-    Write-Error "Error creating the cosmosDB" -ErrorAction Stop
+if($Null -eq $cosmosDBResult){
+    Write-Error "Error creating the cosmosDB.  This error hasn't always been reliable, so check the azure portal in 10 minutes to see if Cosmos DB deployed successfully" -ErrorAction Stop
 }
 Write-Host "The documentEndpoint is: $(($cosmosDBResult | ConvertFrom-Json).documentEndpoint)"
